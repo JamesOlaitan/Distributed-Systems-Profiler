@@ -1,0 +1,15 @@
+# Ignores compiled C++ files and build artifacts
+*.o
+*.out
+*.exe
+*.app
+*.dSYM/
+build/
+
+# Ignores Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# Ignores virtual environment
+.venv
