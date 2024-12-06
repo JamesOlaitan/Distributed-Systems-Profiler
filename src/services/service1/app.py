@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException
 from starlette.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from common.metrics_middleware import MetricsMiddleware
+from services.common.metrics_middleware import MetricsMiddleware
 import random
 import asyncio
+import uvicorn
 
 app = FastAPI()
 
@@ -40,3 +41,6 @@ async def metrics():
         Response: Prometheus metrics in text format.
     """
     return Response(generate_latest(), media_type=CONTENT_TYPE_LATEST)
+
+if __name__ == '__main__':
+    uvicorn.run("app:app", host="127.0.0.1", port=8000, reload=True)
