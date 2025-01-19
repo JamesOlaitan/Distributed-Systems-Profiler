@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 
     try {
         // Example queries for our 3 key metrics
-        // You can adjust queries based on your actual metric names
+        // You can adjust queries based on actual metric names
         std::string latencyQuery   = "avg_over_time(http_request_latency_seconds[1m])";
         std::string throughputQuery = "sum(increase(http_requests_total[1m]))";
         std::string errorRateQuery  = "sum(increase(http_errors_total[1m]))";
