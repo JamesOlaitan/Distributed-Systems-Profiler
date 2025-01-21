@@ -13,3 +13,6 @@ __pycache__/
 
 # Ignores virtual environment
 .venv
+
+# Ignores vscode files
+.vscode/
