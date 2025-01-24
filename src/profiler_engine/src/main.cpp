@@ -74,6 +74,7 @@ int main(int argc, char* argv[])
 
         // Anomaly detection for error rate
         // ...
+        
     }
     catch (const std::exception& ex) {
         std::cerr << "Exception in profiler engine: " << ex.what() << std::endl;
