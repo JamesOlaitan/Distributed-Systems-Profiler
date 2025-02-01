@@ -1,0 +1,50 @@
+{
+    "title": "Distributed System Metrics",
+    "uid": "distributed-system",
+    "version": 1,
+    "schemaVersion": 36,
+    "panels": [
+      {
+        "title": "Average Latency (Last 1m)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "avg_over_time(http_request_latency_seconds[1m])",
+            "legendFormat": "{{instance}}",
+            "interval": "",
+            "refId": "A"
+          }
+        ]
+      },
+      {
+        "title": "Throughput (Requests per Minute)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(increase(http_requests_total[1m]))",
+            "legendFormat": "Requests - {{instance}}",
+            "refId": "B"
+          }
+        ]
+      },
+      {
+        "title": "Error Rate (Errors per Minute)",
+        "type": "graph",
+        "gridPos": { "x": 0, "y": 16, "w": 12, "h": 8 },
+        "targets": [
+          {
+            "expr": "sum(increase(http_errors_total[1m]))",
+            "legendFormat": "Errors - {{instance}}",
+            "refId": "C"
+          }
+        ]
+      }
+    ],
+    "time": {
+      "from": "now-5m",
+      "to": "now"
+    }
+  }
+  
