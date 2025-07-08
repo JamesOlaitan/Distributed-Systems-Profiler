@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
-from common.metrics_middleware import MetricsMiddleware
+from services.common.metrics_middleware import MetricsMiddleware
 import uvicorn
 
 app = FastAPI()
