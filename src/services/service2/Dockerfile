@@ -3,7 +3,7 @@ FROM python:3.9-slim
 # Sets the working directory
 WORKDIR /app
 
-# Copies the requirements file and install dependencies
+# Copies the requirements file and installs dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
