@@ -49,6 +49,10 @@ jobs:
           curl -s http://localhost:8000/metrics > build/reports/service1.prom
           curl -s http://localhost:8001/metrics > build/reports/service2.prom
           curl -s http://localhost:8002/metrics > build/reports/service3.prom
+      - name: Install C++ system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
       - name: Build C++ profiler and run rp_test
         run: |
           cmake -S src/profiler_engine -B build/profiler_engine
