@@ -35,6 +35,9 @@ jobs:
         run: |
           docker compose up --build -d
           sleep 15
+      - name: Prepare reports directory
+        run: |
+          mkdir -p build/reports
       - name: Verify targets up
         run: |
           curl -sf http://localhost:8000/healthz
