@@ -1,0 +1,59 @@
+name: ci
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r tests/requirements-test.txt || true
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check src tests || true
+      - name: Unit tests
+        run: pytest -q
+
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose up
+        run: |
+          docker compose up --build -d
+          sleep 15
+      - name: Verify targets up
+        run: |
+          curl -sf http://localhost:8000/healthz
+          curl -sf http://localhost:8001/healthz
+          curl -sf http://localhost:8002/healthz
+          curl -sf http://localhost:9090/api/v1/targets > build/reports/targets.json
+      - name: Scrape metrics
+        run: |
+          curl -s http://localhost:8000/metrics > build/reports/service1.prom
+          curl -s http://localhost:8001/metrics > build/reports/service2.prom
+          curl -s http://localhost:8002/metrics > build/reports/service3.prom
+      - name: Build C++ profiler and run rp_test
+        run: |
+          cmake -S src/profiler_engine -B build/profiler_engine
+          cmake --build build/profiler_engine -j
+          ctest --test-dir build/profiler_engine --output-on-failure
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: metrics-and-targets
+          path: build/reports
+

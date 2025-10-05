@@ -13,7 +13,8 @@ REQUEST_COUNT = Counter(
 REQUEST_LATENCY = Histogram(
     'http_request_latency_seconds',
     'Latency of HTTP requests in seconds',
-    ['service', 'endpoint']
+    ['service', 'endpoint'],
+    buckets=(0.001, 0.005, 0.01, 0.025, 0.05, 0.075, 0.1, 0.2, 0.3, 0.5, 0.75, 1.0, 2.0)
 )
 ERROR_COUNT = Counter(
     'http_errors_total',

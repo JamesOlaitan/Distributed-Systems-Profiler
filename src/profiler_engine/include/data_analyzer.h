@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <queue>
 
 /**
  * @struct MetricData
@@ -50,6 +51,26 @@ public:
      */
     static std::vector<std::string> detectAnomalies(const std::vector<MetricData>& data,
                                                     double threshold);
+
+    /**
+     * @brief Rolling percentile (e.g., P50/P95/P99) over a fixed window using two-heaps.
+     *
+     * Maintains a max-heap for the lower half and min-heap for the upper half,
+     * supporting O(log n) insert and lazy eviction, yielding O(n log n) over n events.
+     */
+    class RollingPercentile {
+    public:
+        explicit RollingPercentile(size_t windowSize);
+        void addSample(double value);
+        double getPercentile(double quantile) const; // quantile in (0,1]
+
+    private:
+        size_t m_windowSize;
+        std::deque<double> m_window;
+        std::priority_queue<double> m_lower; // max-heap
+        std::priority_queue<double, std::vector<double>, std::greater<double>> m_upper; // min-heap
+        void rebalance();
+    };
 };
 
 #endif // DATA_ANALYZER_H

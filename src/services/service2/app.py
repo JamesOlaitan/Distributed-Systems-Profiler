@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
 from starlette.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from services.common.metrics_middleware import MetricsMiddleware
@@ -12,8 +13,18 @@ app = FastAPI()
 app.add_middleware(MetricsMiddleware, service_name='service2')
 
 
+@app.get("/healthz")
+async def health() -> dict:
+    return {"status": "ok"}
+
+
+@app.get("/readyz")
+async def ready() -> dict:
+    return {"ready": True}
+
+
 @app.get("/process")
-async def process_data():
+async def process_data() -> dict:
     """
     Handles GET requests to the /process endpoint.
 

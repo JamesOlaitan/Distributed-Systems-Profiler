@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from pydantic import BaseModel, Field
 from starlette.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from services.common.metrics_middleware import MetricsMiddleware
@@ -10,8 +11,22 @@ app = FastAPI()
 app.add_middleware(MetricsMiddleware, service_name='service3')
 
 
+class SubmitRequest(BaseModel):
+    payload: dict = Field(default_factory=dict)
+
+
+@app.get("/healthz")
+async def health() -> dict:
+    return {"status": "ok"}
+
+
+@app.get("/readyz")
+async def ready() -> dict:
+    return {"ready": True}
+
+
 @app.post("/submit")
-async def submit_data(data: dict):
+async def submit_data(data: SubmitRequest) -> dict:
     """
     Handle POST requests to the /submit endpoint.
 

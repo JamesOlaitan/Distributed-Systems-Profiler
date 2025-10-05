@@ -35,3 +35,35 @@ def test_metrics_endpoint():
     response = client.get("/metrics")
     assert response.status_code == 200
     assert response.headers["content-type"] == CONTENT_TYPE_LATEST
+
+
+def test_health_ready():
+    r1 = client.get("/healthz")
+    r2 = client.get("/readyz")
+    assert r1.status_code == 200 and r1.json()["status"] == "ok"
+    assert r2.status_code == 200 and r2.json()["ready"] is True
+
+
+def test_fanout(monkeypatch):
+    from services.service1 import app as app_mod
+    async def fake_get(url, **kwargs):
+        class R:
+            def raise_for_status(self):
+                return None
+        return R()
+    async def fake_post(url, json=None, **kwargs):
+        class R:
+            def raise_for_status(self):
+                return None
+        return R()
+    class FakeAsyncClient:
+        def __init__(self, *a, **k): pass
+        async def __aenter__(self): return self
+        async def __aexit__(self, *a): return False
+        get = staticmethod(fake_get)
+        post = staticmethod(fake_post)
+
+    monkeypatch.setattr(app_mod.httpx, "AsyncClient", FakeAsyncClient)
+    response = client.get("/fanout")
+    assert response.status_code == 200
+    assert response.json()["success"] == 1

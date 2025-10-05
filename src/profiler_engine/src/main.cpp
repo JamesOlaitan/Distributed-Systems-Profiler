@@ -56,6 +56,14 @@ int main(int argc, char* argv[])
         std::cout << "Average Throughput (last 1m): " << avgThroughput << " requests" << std::endl;
         std::cout << "Average Error Rate (last 1m): " << avgErrorRate << " errors" << std::endl;
 
+        // Rolling percentile demo (P50/P95/P99) using synthesized stream as example
+        DataAnalyzer::RollingPercentile rp(100);
+        for (const auto& d : latencyData) { rp.addSample(d.value); }
+        double p50 = rp.getPercentile(0.50);
+        double p95 = rp.getPercentile(0.95);
+        double p99 = rp.getPercentile(0.99);
+        std::cout << "Latency P50/P95/P99: " << p50 << "/" << p95 << "/" << p99 << std::endl;
+
         // Anomaly detection for latency
         double latencyThreshold = 1.0; // 1 second
         auto latencyAnomalies = DataAnalyzer::detectAnomalies(latencyData, latencyThreshold);

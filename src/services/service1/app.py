@@ -1,4 +1,6 @@
 from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field
+import httpx
 from starlette.responses import Response
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
 from services.common.metrics_middleware import MetricsMiddleware
@@ -12,8 +14,18 @@ app = FastAPI()
 app.add_middleware(MetricsMiddleware, service_name='service1')
 
 
+@app.get("/healthz")
+async def health() -> dict:
+    return {"status": "ok"}
+
+
+@app.get("/readyz")
+async def ready() -> dict:
+    return {"ready": True}
+
+
 @app.get("/data")
-async def get_data():
+async def get_data() -> dict:
     """
     Handle GET requests to the /data endpoint.
 
@@ -30,6 +42,36 @@ async def get_data():
         raise HTTPException(status_code=500, detail="Internal Server Error")
 
     return {"message": "Data retrieved successfully from Service 1"}
+
+
+@app.get("/fanout")
+async def fanout() -> dict:
+    """
+    Calls service2 and service3 to validate service discovery and measure success rate.
+    """
+    timeouts = httpx.Timeout(1.0, connect=0.5)
+    async with httpx.AsyncClient(timeout=timeouts) as client:
+        async def call_service2():
+            for attempt in range(2):
+                try:
+                    r = await client.get("http://service2:8001/process")
+                    r.raise_for_status()
+                    return True
+                except Exception:
+                    if attempt == 1:
+                        return False
+        async def call_service3():
+            for attempt in range(2):
+                try:
+                    r = await client.post("http://service3:8002/submit", json={"payload": {"k": "v"}})
+                    r.raise_for_status()
+                    return True
+                except Exception:
+                    if attempt == 1:
+                        return False
+        ok2, ok3 = await asyncio.gather(call_service2(), call_service3())
+    success = 1 if (ok2 and ok3) else 0
+    return {"service2": ok2, "service3": ok3, "success": success}
 
 
 @app.get("/metrics")

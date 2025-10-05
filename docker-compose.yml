@@ -4,24 +4,27 @@ services:
   service1:
     build: ./src/services/service1
     environment:
-      PYTHONPATH: /app/src
-    command: uvicorn app:app --host 0.0.0.0 --port 8000
+      UVICORN_WORKERS: 2
+      UVICORN_LOOP: uvloop
+    command: uvicorn app:app --host 0.0.0.0 --port 8000 --workers ${UVICORN_WORKERS:-2}
     ports:
       - "8000:8000"
 
   service2:
     build: ./src/services/service2
     environment:
-      PYTHONPATH: /app/src
-    command: uvicorn app:app --host 0.0.0.0 --port 8001
+      UVICORN_WORKERS: 2
+      UVICORN_LOOP: uvloop
+    command: uvicorn app:app --host 0.0.0.0 --port 8001 --workers ${UVICORN_WORKERS:-2}
     ports:
       - "8001:8001"
 
   service3:
     build: ./src/services/service3
     environment:
-      PYTHONPATH: /app/src
-    command: uvicorn app:app --host 0.0.0.0 --port 8002
+      UVICORN_WORKERS: 2
+      UVICORN_LOOP: uvloop
+    command: uvicorn app:app --host 0.0.0.0 --port 8002 --workers ${UVICORN_WORKERS:-2}
     ports:
       - "8002:8002"
 
@@ -45,7 +48,6 @@ services:
       - prometheus
     volumes:
       - ./config/grafana/provisioning:/etc/grafana/provisioning
-      - ./config/grafana/dashboards:/etc/grafana/dashboards
     environment:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
