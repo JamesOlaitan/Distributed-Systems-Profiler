@@ -44,6 +44,14 @@ jobs:
           curl -sf http://localhost:8001/healthz
           curl -sf http://localhost:8002/healthz
           curl -sf http://localhost:9090/api/v1/targets > build/reports/targets.json
+      - name: Set up Python for load test
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install load test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements-loadtest.txt
       - name: Load test service discovery
         run: |
           python3 scripts/load_test.py
