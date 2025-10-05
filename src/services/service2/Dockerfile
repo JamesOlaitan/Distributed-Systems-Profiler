@@ -4,12 +4,12 @@ FROM python:3.11-slim
 WORKDIR /app
 
 # Copies the requirements file and installs dependencies
-COPY ../../../../requirements.txt ./
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copies the application code
-COPY app.py .
-COPY ../common/ /app/services/common/
+COPY src/services/service2/app.py ./app.py
+COPY src/services/common/ /app/services/common/
 RUN adduser --disabled-password --gecos '' appuser && chown -R appuser:appuser /app
 USER appuser
 

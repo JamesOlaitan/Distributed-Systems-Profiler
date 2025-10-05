@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   service1:
-    build: ./src/services/service1
+    build:
+      context: .
+      dockerfile: ./src/services/service1/Dockerfile
     environment:
       UVICORN_WORKERS: 2
       UVICORN_LOOP: uvloop
@@ -11,7 +13,9 @@ services:
       - "8000:8000"
 
   service2:
-    build: ./src/services/service2
+    build:
+      context: .
+      dockerfile: ./src/services/service2/Dockerfile
     environment:
       UVICORN_WORKERS: 2
       UVICORN_LOOP: uvloop
@@ -20,7 +24,9 @@ services:
       - "8001:8001"
 
   service3:
-    build: ./src/services/service3
+    build:
+      context: .
+      dockerfile: ./src/services/service3/Dockerfile
     environment:
       UVICORN_WORKERS: 2
       UVICORN_LOOP: uvloop
