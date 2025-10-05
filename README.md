@@ -1,6 +1,11 @@
 # Distributed Systems Profiler
 
-A containerized microservices testbed (3 FastAPI REST APIs) with a C++17 profiling engine and full observability via Prometheus and Grafana.
+A containerized microservices testbed (3 FastAPI REST APIs) with a C++17 profiling engine and full observability using Prometheus and Grafana.
+
+[![CI](https://github.com/JamesOlaitan/Distributed-Systems-Profiler/actions/workflows/ci.yml/badge.svg)](https://github.com/JamesOlaitan/Distributed-Systems-Profiler/actions/workflows/ci.yml)
+![Lint](https://img.shields.io/badge/style-ruff-000000.svg?logo=python)
+![Docker](https://img.shields.io/badge/container-ready-blue?logo=docker)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 ## Features
 - 3 FastAPI services with health/readiness endpoints and Prometheus metrics

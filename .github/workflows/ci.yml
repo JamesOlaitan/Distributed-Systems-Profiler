@@ -44,6 +44,9 @@ jobs:
           curl -sf http://localhost:8001/healthz
           curl -sf http://localhost:8002/healthz
           curl -sf http://localhost:9090/api/v1/targets > build/reports/targets.json
+      - name: Load test service discovery
+        run: |
+          python3 scripts/load_test.py
       - name: Scrape metrics
         run: |
           curl -s http://localhost:8000/metrics > build/reports/service1.prom
